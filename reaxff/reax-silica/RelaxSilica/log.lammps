@@ -1,0 +1,162 @@
+LAMMPS (22 Dec 2022)
+# SiO amorphous silica relaxed with reaxff potential
+
+units real
+atom_style full
+
+read_data silica.data
+Reading data file ...
+  orthogonal box = (-3.1662119 2.4397298 1.5469185) to (23.75179 18.145848 19.038659)
+  2 by 2 by 2 MPI processor grid
+  reading atoms ...
+  576 atoms
+  reading velocities ...
+  576 velocities
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     0 = max # of 1-2 neighbors
+     0 = max # of 1-3 neighbors
+     0 = max # of 1-4 neighbors
+     1 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+  read_data CPU = 0.006 seconds
+
+mass 1 28.0855 # Si
+mass 2 15.999 # O
+
+pair_style reaxff NULL safezone 3.0 mincap 150
+pair_coeff * * reaxCHOFe.ff Si O
+WARNING: Van der Waals parameters for element SI indicate inner wall+shielding, but earlier atoms indicate a different van der Waals method. This may cause division-by-zero errors. Keeping van der Waals setting for earlier atoms. (../reaxff_ffield.cpp:251)
+WARNING: Van der Waals parameters for element AL indicate inner wall+shielding, but earlier atoms indicate a different van der Waals method. This may cause division-by-zero errors. Keeping van der Waals setting for earlier atoms. (../reaxff_ffield.cpp:251)
+WARNING: Changed valency_val to valency_boc for X (../reaxff_ffield.cpp:296)
+fix myqeq all qeq/reaxff 1 0.0 10.0 1.0e-6 reaxff maxiter 400
+
+neighbor 0.5 bin
+neigh_modify every 5 delay 0 check yes
+
+group grpSi type 1
+192 atoms in group grpSi
+group grpO type 2
+384 atoms in group grpO
+variable totqSi equal charge(grpSi)
+variable totqO equal charge(grpO)
+variable nSi equal count(grpSi)
+variable nO equal count(grpO)
+variable qSi equal v_totqSi/${nSi}
+variable qSi equal v_totqSi/192
+variable qO equal v_totqO/${nO}
+variable qO equal v_totqO/384
+
+dump dmp all custom 100 dump.lammpstrj id type q x y z
+thermo 10
+thermo_style custom step temp etotal press vol v_qSi v_qO
+
+velocity all create 300.0 3482028
+fix mynpt all npt temp 300.0 300.0 10 aniso 1.0 1.0 100
+timestep 0.5
+
+thermo 100
+run 2000
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+
+- pair reaxff command: doi:10.1016/j.parco.2011.08.005
+
+@Article{Aktulga12,
+ author = {H. M. Aktulga and J. C. Fogarty and S. A. Pandit and A. Y. Grama},
+ title = {Parallel Reactive Molecular Dynamics: {N}umerical Methods and Algorithmic Techniques},
+ journal = {Parallel Computing},
+ year =    2012,
+ volume =  38,
+ number =  {4--5},
+ pages =   {245--259}
+}
+
+- fix qeq/reaxff command: doi:10.1016/j.parco.2011.08.005
+
+@Article{Aktulga12,
+ author = {H. M. Aktulga and J. C. Fogarty and S. A. Pandit and A. Y. Grama},
+ title = {Parallel Reactive Molecular Dynamics: {N}umerical Methods and Algorithmic Techniques},
+ journal = {Parallel Computing},
+ year =    2012,
+ volume =  38,
+ pages =   {245--259}
+}
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Neighbor list info ...
+  update: every = 5 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 10.5
+  ghost atom cutoff = 10.5
+  binsize = 5.25, bins = 6 3 4
+  2 neighbor lists, perpetual/occasional/extra = 2 0 0
+  (1) pair reaxff, perpetual
+      attributes: half, newton off, ghost
+      pair build: half/bin/newtoff/ghost
+      stencil: full/ghost/bin/3d
+      bin: standard
+  (2) fix qeq/reaxff, perpetual, copy from (1)
+      attributes: half, newton off
+      pair build: copy
+      stencil: none
+      bin: none
+Per MPI rank memory allocation (min/avg/max) = 91.3 | 92.06 | 92.96 Mbytes
+   Step          Temp          TotEng         Press          Volume         v_qSi           v_qO     
+         0   300           -82752.034      324297.89      7395.1112      1.8719625     -0.93598127   
+       100   331.09164     -85523.655      2251.2499      7855.8028      1.8652159     -0.93260795   
+       200   307.53696     -85796.47      -7874.6551      7854.0298      1.8772072     -0.93860358   
+       300   290.7589      -85829.062      831.26661      7859.3601      1.8882248     -0.9441124    
+       400   300.89868     -85767.042     -1118.9485      7878.8156      1.8678622     -0.93393109   
+       500   296.99785     -85725.626     -166.50659      7877.3715      1.8745597     -0.93727984   
+       600   294.94528     -85776.758      908.7064       7852.613       1.8773826     -0.93869131   
+       700   290.3948      -85790.415     -4814.9571      7828.36        1.8658361     -0.93291804   
+       800   279.57604     -85817.037     -3877.4457      7830.8188      1.8670165     -0.93350825   
+       900   297.2917      -85763.785     -2326.7629      7827.5295      1.869044      -0.93452199   
+      1000   287.94073     -85791.582      404.1117       7821.3128      1.8622341     -0.93111703   
+      1100   300.70074     -85786.322     -972.58647      7820.5584      1.8701788     -0.93508942   
+      1200   305.70117     -85749.822     -1086.7608      7848.2836      1.8561509     -0.92807544   
+      1300   291.50128     -85795.804     -2536.8483      7813.7244      1.8640882     -0.93204412   
+      1400   311.99584     -85786.292     -2223.5412      7815.1445      1.8698999     -0.93494994   
+      1500   299.10559     -85801.293      215.7825       7787.4582      1.871515      -0.93575749   
+      1600   311.2218      -85763.818     -3412.7728      7820.1788      1.8798405     -0.93992023   
+      1700   280.66804     -85813.134     -3360.7045      7798.2574      1.8695081     -0.93475405   
+      1800   282.09599     -85792.254     -4292.4344      7872.9317      1.8725516     -0.93627578   
+      1900   293.31253     -85798.555     -451.8371       7815.7617      1.8659758     -0.93298788   
+      2000   304.65044     -85790.536     -4493.1593      7849.1385      1.8676876     -0.93384382   
+Loop time of 43.8199 on 8 procs for 2000 steps with 576 atoms
+
+Performance: 1.972 ns/day, 12.172 hours/ns, 45.641 timesteps/s, 26.289 katom-step/s
+99.1% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 16.61      | 21.656     | 36.439     | 131.4 | 49.42
+Bond    | 0.00040965 | 0.00049814 | 0.00061495 |   0.0 |  0.00
+Neigh   | 0.39481    | 0.43713    | 0.55973    |   7.8 |  1.00
+Comm    | 0.97576    | 15.764     | 20.807     | 154.0 | 35.98
+Output  | 0.00453    | 0.0045559  | 0.0046982  |   0.1 |  0.01
+Modify  | 5.829      | 5.9471     | 5.9941     |   2.1 | 13.57
+Other   |            | 0.009685   |            |       |  0.02
+
+Nlocal:             72 ave          78 max          68 min
+Histogram: 1 0 1 3 0 1 1 0 0 1
+Nghost:        2152.62 ave        2183 max        2132 min
+Histogram: 2 1 1 1 0 0 1 0 1 1
+Neighs:        23356.5 ave       25374 max       21912 min
+Histogram: 1 1 0 2 2 1 0 0 0 1
+
+Total # of neighbors = 186852
+Ave neighs/atom = 324.39583
+Ave special neighs/atom = 0
+Neighbor list builds = 67
+Dangerous builds = 3
+
+write_data silica-relaxed.data
+System init for write_data ...
+Total wall time: 0:00:43
