@@ -1,5 +1,5 @@
 <a href="https://lammpstutorials.github.io">
-<img src="docs/figures/welcome.png" width="80%" /></a>
+<img src="welcome.png" width="80%" /></a>
 
 This is the repository containing the inputs of the [LAMMPS Tutorials 2.0](https://lammpstutorials.github.io/) webpage.
 
