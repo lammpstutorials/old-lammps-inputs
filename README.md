@@ -2,7 +2,7 @@
 <img src="welcome.png" width="80%" /></a>
 
 This is the old repository containing the inputs of the [LAMMPS Tutorials](https://lammpstutorials.github.io/) webpage. Current inputs
-are stored [here](https://github.com/lammpstutorials/lammpstutorials.github.io/tree/version2.0/docs/inputs)
+are stored [here](https://github.com/lammpstutorials/lammpstutorials-inputs)
 
 ### List of tutorials:
 
